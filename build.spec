@@ -4,12 +4,34 @@ PyInstaller 打包配置文件
 使用方法: pyinstaller build.spec
 """
 
+import os
+import sys
+
 block_cipher = None
+
+# 收集 ctypes 相关的所有二进制文件
+binaries = []
+if sys.platform == 'win32':
+    # 尝试找到 libffi DLL
+    python_dir = os.path.dirname(sys.executable)
+    dll_paths = [
+        os.path.join(python_dir, 'DLLs'),
+        os.path.join(python_dir, 'Library', 'bin'),
+        python_dir,
+    ]
+
+    for dll_dir in dll_paths:
+        if os.path.exists(dll_dir):
+            for dll_file in ['libffi-7.dll', 'libffi-8.dll', 'ffi.dll']:
+                dll_path = os.path.join(dll_dir, dll_file)
+                if os.path.exists(dll_path):
+                    binaries.append((dll_path, '.'))
+                    print(f"Found and including: {dll_path}")
 
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[],
+    binaries=binaries,
     datas=[
         ('resources/KexSetup_Release_1_1_2_1428.exe', 'resources'),
         # 如果有图标文件，取消下面的注释
@@ -23,8 +45,10 @@ a = Analysis(
         '_tkinter',
         'ctypes',
         'ctypes.wintypes',
+        '_ctypes',
+        'ctypes.util',
     ],
-    hookspath=['.'],  # 使用当前目录的 hook
+    hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
