@@ -28,17 +28,23 @@ Clash Verge Rev v1.6.2+ 版本在 Windows 7 上启动时会报错 `0xc0000005`�
 
 1. 从 [Releases](../../releases) 下载 `ClashVerge-VxKex-Configurator-v1.0-PowerShell.zip`
 2. 解压到任意目录
-3. **右键 `ClashVerge-VxKex-Configurator.exe` → 以管理员身份运行**
+3. **右键 `ClashVerge-VxKex-Configurator.bat` → 以管理员身份运行**
 4. 选择 Clash Verge 可执行文件（或自动检测）
 5. 点击 **"🚀 一键启用 VxKex"** 按钮
 6. 等待完成（约 1-2 分钟）
 7. ✅ 完成！现在可以启动 Clash Verge 了
 
-⚠️ **注意**: 必须保持 `resources` 文件夹与 `.exe` 在同一目录！
+⚠️ **注意**: 所有文件必须在同一目录！
 
 ### 从源码运行
 
-直接运行 PowerShell 脚本:
+方式 1: 使用 BAT 启动器（推荐）
+
+```batch
+ClashVerge-VxKex-Configurator.bat
+```
+
+方式 2: 直接运行 PowerShell 脚本
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\VxKexConfigurator.ps1
@@ -70,19 +76,16 @@ powershell -ExecutionPolicy Bypass -File .\VxKexConfigurator.ps1
 
 ### 打包步骤
 
-```powershell
-# 1. 安装 ps2exe
-Install-Module -Name ps2exe -Scope CurrentUser -Force
+无需打包!直接分发以下文件:
 
-# 2. 运行构建脚本
-.\build-powershell.ps1
-```
+- `ClashVerge-VxKex-Configurator.bat` - 启动器
+- `VxKexConfigurator.ps1` - PowerShell 脚本
+- `resources/` - 资源文件夹
 
-### 构建产物
+### 文件说明
 
-- 位置：`dist/ClashVerge-VxKex-Configurator.exe`
-- 大小：约 200 KB + VxKex 安装包 (3.9 MB)
-- 特点：原生 PowerShell，无需额外运行时
+- 总大小：约 4 MB (主要是 VxKex 安装包)
+- 特点：纯脚本,无需编译,无需 .NET Framework
 
 ---
 
@@ -90,8 +93,8 @@ Install-Module -Name ps2exe -Scope CurrentUser -Force
 
 ```
 vxkex-configurator/
+├── ClashVerge-VxKex-Configurator.bat          # 启动器 (检查权限并调用 PS1)
 ├── VxKexConfigurator.ps1                      # 主程序（PowerShell + Windows Forms）
-├── build-powershell.ps1                       # 构建脚本
 ├── README.md                                  # 本文档
 └── resources/
     └── KexSetup_Release_1_1_2_1428.exe       # VxKex 安装包（3.9 MB）
@@ -126,6 +129,14 @@ vxkex-configurator/
 - ✅ 没有 DLL 兼容性问题
 - ✅ 体积更小，启动更快
 - ✅ 更稳定可靠
+
+### Q: 为什么不用 ps2exe 打包成 EXE？
+
+**A:**
+- ps2exe 打包的 EXE 需要 .NET Framework 4.0+
+- Windows 7 默认只有 .NET Framework 3.5
+- 用户需要额外安装 .NET Framework
+- 直接运行 PowerShell 脚本更简单，无需任何依赖！
 
 ---
 
