@@ -54,8 +54,7 @@ exe = EXE(
     uac_admin=True,
     uac_uiaccess=False,
     # Windows 7 兼容性设置
-    manifest='''
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    manifest='''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
   <assemblyIdentity
     version="1.0.0.0"
@@ -95,6 +94,5 @@ exe = EXE(
       />
     </dependentAssembly>
   </dependency>
-</assembly>
-''',
+</assembly>''',
 )
