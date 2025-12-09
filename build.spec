@@ -15,8 +15,16 @@ a = Analysis(
         # 如果有图标文件，取消下面的注释
         # ('resources/icon.ico', 'resources'),
     ],
-    hiddenimports=[],
-    hookspath=[],
+    hiddenimports=[
+        'tkinter',
+        'tkinter.ttk',
+        'tkinter.messagebox',
+        'tkinter.filedialog',
+        '_tkinter',
+        'ctypes',
+        'ctypes.wintypes',
+    ],
+    hookspath=['.'],  # 使用当前目录的 hook
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],

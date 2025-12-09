@@ -33,7 +33,8 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller build.spec
+        # 添加 --hidden-import 确保包含所有依赖
+        pyinstaller build.spec --clean
 
     - name: Check build output
       run: |
