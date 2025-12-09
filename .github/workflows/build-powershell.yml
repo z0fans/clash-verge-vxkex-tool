@@ -20,18 +20,45 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Prepare files for IExpress
+      shell: pwsh
+      run: |
+        Write-Host "检查文件是否存在..." -ForegroundColor Yellow
+
+        $files = @(
+          "ClashVerge-VxKex-Configurator.bat",
+          "VxKexConfigurator.ps1",
+          "resources\KexSetup_Release_1_1_2_1428.exe",
+          "create-sfx.sed"
+        )
+
+        foreach ($file in $files) {
+          if (Test-Path $file) {
+            Write-Host "  ✓ $file" -ForegroundColor Green
+          } else {
+            Write-Host "  ❌ $file 不存在!" -ForegroundColor Red
+            exit 1
+          }
+        }
+
+        # 创建输出目录
+        New-Item -ItemType Directory -Path "dist" -Force | Out-Null
+        Write-Host "✓ 文件检查完成" -ForegroundColor Green
+
     - name: Create Self-Extracting EXE with IExpress
       shell: cmd
       run: |
         echo 创建自解压 EXE...
 
-        REM 创建输出目录
-        if not exist dist mkdir dist
-
         REM 使用 IExpress 创建自解压 EXE
-        iexpress /N /Q create-sfx.sed
+        iexpress /N create-sfx.sed
 
-        echo ✓ 自解压 EXE 创建完成
+        if exist dist\ClashVerge-VxKex-Configurator.exe (
+          echo ✓ 自解压 EXE 创建成功
+        ) else (
+          echo ❌ 自解压 EXE 创建失败
+          exit /b 1
+        )
 
     - name: Check build output
       shell: pwsh
