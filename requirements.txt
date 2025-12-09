@@ -1,8 +1,0 @@
-# Python 依赖包列表
-# 安装命令: pip install -r requirements.txt
-
-# PyInstaller - 用于打包成 exe
-pyinstaller>=6.0.0
-
-# 注意: tkinter 是 Python 标准库的一部分，无需额外安装
-# 注意: winreg 也是 Windows 下的标准库
