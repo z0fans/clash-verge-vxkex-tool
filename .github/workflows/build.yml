@@ -48,8 +48,8 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        # 使用 --log-level DEBUG 查看详细打包信息
-        pyinstaller build.spec --clean --log-level INFO
+        # 使用 --collect-all 确保收集所有依赖
+        pyinstaller build.spec --clean --log-level INFO --collect-all ctypes --collect-all _ctypes
 
     - name: Check build output
       run: |

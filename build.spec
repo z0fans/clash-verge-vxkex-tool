@@ -6,6 +6,8 @@ PyInstaller 打包配置文件
 
 from PyInstaller.utils.hooks import collect_dynamic_libs, collect_data_files
 import sys
+import os
+import glob
 
 block_cipher = None
 
@@ -13,12 +15,41 @@ block_cipher = None
 binaries = []
 datas = []
 
-# 收集 _ctypes 相关的所有动态库
+# 手动收集 Python DLLs 目录中的关键 DLL 文件
+python_dir = os.path.dirname(sys.executable)
+dlls_dir = os.path.join(python_dir, 'DLLs')
+
+print(f"Python directory: {python_dir}")
+print(f"DLLs directory: {dlls_dir}")
+
+# 收集所有可能需要的 DLL
+dll_patterns = [
+    'libffi*.dll',
+    'ffi*.dll',
+    '_ctypes*.pyd',
+    '_tkinter*.pyd',
+    'tcl*.dll',
+    'tk*.dll',
+]
+
+if os.path.exists(dlls_dir):
+    for pattern in dll_patterns:
+        for dll_file in glob.glob(os.path.join(dlls_dir, pattern)):
+            binaries.append((dll_file, '.'))
+            print(f"Found and including: {dll_file}")
+
+# 也搜索 Python 根目录
+for pattern in dll_patterns:
+    for dll_file in glob.glob(os.path.join(python_dir, pattern)):
+        binaries.append((dll_file, '.'))
+        print(f"Found and including: {dll_file}")
+
+# 收集 _ctypes 相关的所有动态库 (作为补充)
 try:
     ctypes_binaries = collect_dynamic_libs('_ctypes')
     if ctypes_binaries:
         binaries.extend(ctypes_binaries)
-        print(f"Collected {len(ctypes_binaries)} _ctypes binaries")
+        print(f"Collected {len(ctypes_binaries)} _ctypes binaries via collect_dynamic_libs")
 except Exception as e:
     print(f"Warning: Could not collect _ctypes binaries: {e}")
 
@@ -27,9 +58,11 @@ try:
     tkinter_binaries = collect_dynamic_libs('tkinter')
     if tkinter_binaries:
         binaries.extend(tkinter_binaries)
-        print(f"Collected {len(tkinter_binaries)} tkinter binaries")
+        print(f"Collected {len(tkinter_binaries)} tkinter binaries via collect_dynamic_libs")
 except Exception as e:
     print(f"Warning: Could not collect tkinter binaries: {e}")
+
+print(f"Total binaries to include: {len(binaries)}")
 
 a = Analysis(
     ['main.py'],
