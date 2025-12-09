@@ -4,29 +4,32 @@ PyInstaller 打包配置文件
 使用方法: pyinstaller build.spec
 """
 
-import os
+from PyInstaller.utils.hooks import collect_dynamic_libs, collect_data_files
 import sys
 
 block_cipher = None
 
-# 收集 ctypes 相关的所有二进制文件
+# 使用 PyInstaller 的内置功能收集所有 ctypes 相关的二进制文件
 binaries = []
-if sys.platform == 'win32':
-    # 尝试找到 libffi DLL
-    python_dir = os.path.dirname(sys.executable)
-    dll_paths = [
-        os.path.join(python_dir, 'DLLs'),
-        os.path.join(python_dir, 'Library', 'bin'),
-        python_dir,
-    ]
+datas = []
 
-    for dll_dir in dll_paths:
-        if os.path.exists(dll_dir):
-            for dll_file in ['libffi-7.dll', 'libffi-8.dll', 'ffi.dll']:
-                dll_path = os.path.join(dll_dir, dll_file)
-                if os.path.exists(dll_path):
-                    binaries.append((dll_path, '.'))
-                    print(f"Found and including: {dll_path}")
+# 收集 _ctypes 相关的所有动态库
+try:
+    ctypes_binaries = collect_dynamic_libs('_ctypes')
+    if ctypes_binaries:
+        binaries.extend(ctypes_binaries)
+        print(f"Collected {len(ctypes_binaries)} _ctypes binaries")
+except Exception as e:
+    print(f"Warning: Could not collect _ctypes binaries: {e}")
+
+# 收集 tkinter 相关的二进制文件
+try:
+    tkinter_binaries = collect_dynamic_libs('tkinter')
+    if tkinter_binaries:
+        binaries.extend(tkinter_binaries)
+        print(f"Collected {len(tkinter_binaries)} tkinter binaries")
+except Exception as e:
+    print(f"Warning: Could not collect tkinter binaries: {e}")
 
 a = Analysis(
     ['main.py'],

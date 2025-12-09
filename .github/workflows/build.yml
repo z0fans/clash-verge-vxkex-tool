@@ -31,10 +31,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Debug Python environment
+      run: |
+        python --version
+        python -c "import sys; print('Python path:', sys.executable)"
+        python -c "import sys; import os; print('DLLs dir:', os.path.join(os.path.dirname(sys.executable), 'DLLs'))"
+        dir "%PYTHONHOME%\DLLs" 2>nul || echo "DLLs directory not found"
+        python -c "import ctypes; print('ctypes imported successfully')"
+
     - name: Build with PyInstaller
       run: |
-        # 添加 --hidden-import 确保包含所有依赖
-        pyinstaller build.spec --clean
+        # 使用 --log-level DEBUG 查看详细打包信息
+        pyinstaller build.spec --clean --log-level INFO
 
     - name: Check build output
       run: |
