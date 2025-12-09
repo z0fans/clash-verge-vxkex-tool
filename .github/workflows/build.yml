@@ -24,7 +24,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.8'  # Python 3.8 是支持 Windows 7 的最后版本
 
     - name: Install dependencies
       run: |
