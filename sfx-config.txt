@@ -1,0 +1,5 @@
+;!@Install@!UTF-8!
+Title="Clash Verge VxKex 一键配置工具"
+BeginPrompt="此工具将帮助您在 Windows 7 上配置 Clash Verge。\n\n点击"安装"开始。"
+RunProgram="ClashVerge-VxKex-Configurator.bat"
+;!@InstallEnd@!

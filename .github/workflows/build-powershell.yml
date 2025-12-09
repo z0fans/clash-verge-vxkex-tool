@@ -20,84 +20,73 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Prepare distribution
-      shell: pwsh
+    - name: Create Self-Extracting EXE with IExpress
+      shell: cmd
       run: |
-        Write-Host "准备分发文件..." -ForegroundColor Cyan
+        echo 创建自解压 EXE...
 
-        # 创建输出目录
-        New-Item -ItemType Directory -Path "dist" -Force | Out-Null
+        REM 创建输出目录
+        if not exist dist mkdir dist
 
-        # 复制脚本文件
-        Copy-Item "VxKexConfigurator.ps1" -Destination "dist\" -Force
-        Copy-Item "ClashVerge-VxKex-Configurator.bat" -Destination "dist\" -Force
+        REM 使用 IExpress 创建自解压 EXE
+        iexpress /N /Q create-sfx.sed
 
-        Write-Host "✓ 文件准备完成" -ForegroundColor Green
-
-    - name: Copy resources
-      shell: pwsh
-      run: |
-        Write-Host "复制资源文件..." -ForegroundColor Yellow
-        Copy-Item -Path "resources" -Destination "dist\resources" -Recurse -Force
-        Write-Host "✓ 资源文件复制完成" -ForegroundColor Green
+        echo ✓ 自解压 EXE 创建完成
 
     - name: Check build output
       shell: pwsh
       run: |
         Write-Host "`n构建输出:" -ForegroundColor Cyan
-        Get-ChildItem -Path "dist" -Recurse | ForEach-Object {
-          $size = if ($_.PSIsContainer) { "" } else { " ($([math]::Round($_.Length / 1KB, 2)) KB)" }
-          Write-Host "  $($_.FullName.Replace($PWD, '.'))$size"
+        if (Test-Path "dist\ClashVerge-VxKex-Configurator.exe") {
+          $size = [math]::Round((Get-Item "dist\ClashVerge-VxKex-Configurator.exe").Length / 1MB, 2)
+          Write-Host "  ClashVerge-VxKex-Configurator.exe ($size MB)" -ForegroundColor Green
+          Write-Host "  ✓ 自解压 EXE 构建成功!" -ForegroundColor Green
+        } else {
+          Write-Host "  ❌ 未找到输出文件" -ForegroundColor Red
+          exit 1
         }
-
-    - name: Create ZIP package
-      shell: pwsh
-      run: |
-        Write-Host "`n创建 ZIP 压缩包..." -ForegroundColor Yellow
-        Compress-Archive -Path "dist\*" -DestinationPath "ClashVerge-VxKex-Configurator-v1.0-PowerShell.zip" -Force
-        Write-Host "✓ ZIP 压缩包创建完成" -ForegroundColor Green
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ClashVerge-VxKex-Configurator-PowerShell
-        path: ClashVerge-VxKex-Configurator-v1.0-PowerShell.zip
+        name: ClashVerge-VxKex-Configurator
+        path: dist\ClashVerge-VxKex-Configurator.exe
 
     - name: Create Release (on tag push)
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
-        files: ClashVerge-VxKex-Configurator-v1.0-PowerShell.zip
+        files: dist\ClashVerge-VxKex-Configurator.exe
         body: |
           ## Clash Verge VxKex 一键配置工具 (PowerShell 原生版)
 
           ### ✨ 新版本特性
-          - 🚀 **PowerShell 原生实现** - 无需 Python 运行时
-          - 📦 **体积更小** - 仅包含 PowerShell 脚本和资源文件
-          - ⚡ **启动更快** - 原生 Windows 技术栈
-          - 🛡️ **更稳定** - 避免了所有 DLL 兼容性问题
-          - 💯 **完美兼容** - Windows 7 SP1+ 原生支持,无需 .NET Framework 4.0+
+          - 🎁 **单文件 EXE** - 一个文件包含所有内容
+          - 🚀 **下载即用** - 无需解压,直接运行
+          - 📦 **自动解压** - 使用 Windows 内置的 IExpress 技术
+          - ⚡ **零依赖** - PowerShell 原生,无需 Python 或 .NET Framework 4.0+
+          - 💯 **完美兼容** - Windows 7 SP1+ 原生支持
 
-          ### 📥 使用方法
-          1. 下载 `ClashVerge-VxKex-Configurator-v1.0-PowerShell.zip`
-          2. 解压到任意目录
-          3. 右键 `ClashVerge-VxKex-Configurator.bat` → 以管理员身份运行
-          4. 点击"浏览..."选择 Clash Verge 可执行文件 (或自动检测)
-          5. 点击"🚀 一键启用 VxKex"按钮
-          6. 等待完成（约 1-2 分钟）
+          ### 📥 使用方法（超级简单！）
+          1. 下载 `ClashVerge-VxKex-Configurator.exe`
+          2. 右键 → **以管理员身份运行**
+          3. 点击"是"确认
+          4. 自动解压并启动 GUI 界面
+          5. 选择 Clash Verge 路径（或自动检测）
+          6. 点击"🚀 一键启用 VxKex"按钮
           7. ✅ 完成！现在可以启动 Clash Verge 了
 
           ### 📋 系统要求
           - Windows 7 SP1 或更高版本
           - PowerShell 2.0+ (Windows 7+ 内置)
-          - **无需 .NET Framework 4.0+**
+          - **无需任何额外软件**
           - 需要管理员权限
 
-          ### 📦 文件说明
-          - `ClashVerge-VxKex-Configurator.bat` - 启动器
-          - `VxKexConfigurator.ps1` - PowerShell 脚本
-          - `resources/KexSetup_Release_1_1_2_1428.exe` - VxKex 安装包
-          - ⚠️ 必须保持所有文件在同一目录
+          ### 🎯 技术说明
+          - 使用 IExpress (Windows 内置) 创建自解压 EXE
+          - 包含 PowerShell 脚本和 VxKex 安装包
+          - 临时解压到 %TEMP% 目录
+          - 配置完成后自动清理
 
           ### 🔗 相关链接
           - [问题讨论 (Issue #1041)](https://github.com/clash-verge-rev/clash-verge-rev/issues/1041)

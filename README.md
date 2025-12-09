@@ -12,13 +12,14 @@ Clash Verge Rev v1.6.2+ 版本在 Windows 7 上启动时会报错 `0xc0000005`�
 
 ## ✨ 功能特性
 
-- ✅ **PowerShell 原生实现** - 无需 Python 运行时
+- 🎁 **单文件 EXE** - 一个文件包含所有内容
+- 🚀 **下载即用** - 无需解压，直接运行
+- ✅ **零依赖** - 无需 Python、.NET Framework 4.0+
 - ✅ **一键完成** - 无需任何手动操作
 - ✅ **自动安装 VxKex** - 内置 VxKex 安装包（v1.1.2）
 - ✅ **自动检测路径** - 自动找到 Clash Verge 安装位置
 - ✅ **图形界面** - Windows Forms，简单直观
-- ✅ **体积小** - 仅依赖 Windows 内置组件
-- ✅ **启动快** - 原生技术栈，无 DLL 兼容性问题
+- ✅ **完美兼容** - Windows 7 SP1+ 原生支持
 
 ---
 
@@ -26,15 +27,19 @@ Clash Verge Rev v1.6.2+ 版本在 Windows 7 上启动时会报错 `0xc0000005`�
 
 ### 下载预编译版本（推荐）
 
-1. 从 [Releases](../../releases) 下载 `ClashVerge-VxKex-Configurator-v1.0-PowerShell.zip`
-2. 解压到任意目录
-3. **右键 `ClashVerge-VxKex-Configurator.bat` → 以管理员身份运行**
-4. 选择 Clash Verge 可执行文件（或自动检测）
-5. 点击 **"🚀 一键启用 VxKex"** 按钮
-6. 等待完成（约 1-2 分钟）
-7. ✅ 完成！现在可以启动 Clash Verge 了
+**超级简单！只需 3 步：**
 
-⚠️ **注意**: 所有文件必须在同一目录！
+1. 从 [Releases](../../releases) 下载 `ClashVerge-VxKex-Configurator.exe`
+2. **右键 → 以管理员身份运行**
+3. ✅ 完成！按照 GUI 提示操作即可
+
+**工作流程：**
+- 自动解压文件到临时目录
+- 启动 GUI 配置界面
+- 选择 Clash Verge 路径（或自动检测）
+- 点击"🚀 一键启用 VxKex"
+- 等待完成（约 1-2 分钟）
+- 配置完成后自动清理临时文件
 
 ### 从源码运行
 
