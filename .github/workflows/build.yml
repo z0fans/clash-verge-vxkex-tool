@@ -32,11 +32,18 @@ jobs:
         pip install -r requirements.txt
 
     - name: Debug Python environment
+      shell: pwsh
       run: |
         python --version
         python -c "import sys; print('Python path:', sys.executable)"
         python -c "import sys; import os; print('DLLs dir:', os.path.join(os.path.dirname(sys.executable), 'DLLs'))"
-        dir "%PYTHONHOME%\DLLs" 2>nul || echo "DLLs directory not found"
+        $pythonDir = python -c "import sys; import os; print(os.path.dirname(sys.executable))"
+        Write-Host "Checking DLLs directory: $pythonDir\DLLs"
+        if (Test-Path "$pythonDir\DLLs") {
+          Get-ChildItem "$pythonDir\DLLs" -Filter "*.dll" | Select-Object -First 10 Name
+        } else {
+          Write-Host "DLLs directory not found"
+        }
         python -c "import ctypes; print('ctypes imported successfully')"
 
     - name: Build with PyInstaller
