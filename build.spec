@@ -4,7 +4,7 @@ PyInstaller 打包配置文件
 使用方法: pyinstaller build.spec
 """
 
-from PyInstaller.utils.hooks import collect_dynamic_libs, collect_data_files
+from PyInstaller.utils.hooks import collect_dynamic_libs, collect_data_files, collect_all
 import sys
 import os
 import glob
@@ -44,6 +44,21 @@ for pattern in dll_patterns:
         binaries.append((dll_file, '.'))
         print(f"Found and including: {dll_file}")
 
+# 使用 collect_all 收集 ctypes 和 _ctypes 的所有内容
+try:
+    ctypes_all = collect_all('ctypes')
+    if ctypes_all:
+        if ctypes_all[0]:  # datas
+            datas.extend(ctypes_all[0])
+            print(f"Collected {len(ctypes_all[0])} ctypes datas via collect_all")
+        if ctypes_all[1]:  # binaries
+            binaries.extend(ctypes_all[1])
+            print(f"Collected {len(ctypes_all[1])} ctypes binaries via collect_all")
+        if ctypes_all[2]:  # hiddenimports
+            print(f"Collected {len(ctypes_all[2])} ctypes hiddenimports via collect_all")
+except Exception as e:
+    print(f"Warning: Could not collect_all ctypes: {e}")
+
 # 收集 _ctypes 相关的所有动态库 (作为补充)
 try:
     ctypes_binaries = collect_dynamic_libs('_ctypes')
@@ -63,16 +78,18 @@ except Exception as e:
     print(f"Warning: Could not collect tkinter binaries: {e}")
 
 print(f"Total binaries to include: {len(binaries)}")
+print(f"Total datas to include: {len(datas)}")
+
+# 添加资源文件到 datas
+datas.append(('resources/KexSetup_Release_1_1_2_1428.exe', 'resources'))
+# 如果有图标文件，取消下面的注释
+# datas.append(('resources/icon.ico', 'resources'))
 
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=binaries,
-    datas=[
-        ('resources/KexSetup_Release_1_1_2_1428.exe', 'resources'),
-        # 如果有图标文件，取消下面的注释
-        # ('resources/icon.ico', 'resources'),
-    ],
+    datas=datas,
     hiddenimports=[
         'tkinter',
         'tkinter.ttk',
