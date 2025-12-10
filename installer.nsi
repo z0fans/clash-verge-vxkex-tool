@@ -1,5 +1,9 @@
-; Clash Verge VxKex Configurator - NSIS 安装脚本
+﻿; Clash Verge VxKex Configurator - NSIS 安装脚本
 ; 适用于 Windows 7 SP1 及以上版本
+
+;--------------------------------
+; Unicode 支持（必需，用于正确显示中文）
+Unicode True
 
 ;--------------------------------
 ; 包含必需的头文件
@@ -8,7 +12,7 @@
 ;--------------------------------
 ; 常规设置
 !define PRODUCT_NAME "Clash Verge VxKex Configurator"
-!define PRODUCT_VERSION "4.0.1"
+!define PRODUCT_VERSION "4.0.2"
 !define PRODUCT_PUBLISHER "Clash Verge Rev Community"
 !define PRODUCT_WEB_SITE "https://github.com/z0fans/clash-verge-vxkex-tool"
 
