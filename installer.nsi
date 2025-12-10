@@ -4,7 +4,6 @@
 ;--------------------------------
 ; 包含必需的头文件
 !include "MUI2.nsh"
-!include "FileFunc.nsh"
 
 ;--------------------------------
 ; 常规设置
@@ -17,8 +16,8 @@ Name "${PRODUCT_NAME}"
 OutFile "dist\ClashVerge-VxKex-Configurator.exe"
 InstallDir "$TEMP\ClashVergeVxKex"
 RequestExecutionLevel admin
-ShowInstDetails hide
-AutoCloseWindow true
+ShowInstDetails show
+AutoCloseWindow false
 
 ;--------------------------------
 ; 界面设置
@@ -44,44 +43,44 @@ Section "MainSection" SEC01
     SetOverwrite on
 
     ; 解压必需文件
+    DetailPrint "解压配置文件..."
     File "ClashVerge-VxKex-Configurator.bat"
     File "VxKexConfigurator.ps1"
     File "resources\KexSetup_Release_1_1_2_1428.exe"
 
     ; 执行配置脚本
     DetailPrint "正在启动 VxKex 配置工具..."
+    DetailPrint "请在新打开的窗口中完成配置..."
     ExecWait '"$INSTDIR\ClashVerge-VxKex-Configurator.bat"' $0
 
+    ; 检查执行结果
+    IntCmp $0 0 success
+    DetailPrint "配置工具返回代码: $0"
+    Goto cleanup
+
+    success:
+    DetailPrint "配置成功完成！"
+
+    cleanup:
     ; 清理临时文件
     DetailPrint "清理临时文件..."
+    Sleep 1000
     Delete "$INSTDIR\ClashVerge-VxKex-Configurator.bat"
     Delete "$INSTDIR\VxKexConfigurator.ps1"
     Delete "$INSTDIR\KexSetup_Release_1_1_2_1428.exe"
     RMDir "$INSTDIR"
 
-    DetailPrint "配置完成！"
+    DetailPrint "完成！"
 SectionEnd
-
-;--------------------------------
-; 函数：初始化
-Function .onInit
-    ; 检查 Windows 版本
-    ${If} ${AtLeastWin7}
-        ; 继续安装
-    ${Else}
-        MessageBox MB_ICONSTOP "此工具需要 Windows 7 或更高版本！"
-        Abort
-    ${EndIf}
-FunctionEnd
 
 ;--------------------------------
 ; 函数：安装完成
 Function .onInstSuccess
-    MessageBox MB_OK "VxKex 配置工具已启动，请在窗口中完成配置。"
+    MessageBox MB_OK|MB_ICONINFORMATION "VxKex 配置完成！$\r$\n$\r$\n现在可以正常启动 Clash Verge 了。"
 FunctionEnd
 
 ;--------------------------------
 ; 函数：安装失败
 Function .onInstFailed
-    MessageBox MB_ICONSTOP "配置失败！请检查管理员权限和系统要求。"
+    MessageBox MB_OK|MB_ICONSTOP "配置失败！$\r$\n$\r$\n请确保：$\r$\n1. 以管理员身份运行$\r$\n2. 系统为 Windows 7 SP1 或更高版本"
 FunctionEnd
