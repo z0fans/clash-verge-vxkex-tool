@@ -7,8 +7,21 @@ __pycache__/
 
 # PyInstaller
 build/
-dist/
-*.spec.backup
+
+# IExpress 构建产物
+dist/*.exe
+dist/*.sed
+dist/temp_build.sed
+
+# 7-Zip SFX 构建产物（已弃用）
+*.7z
+temp_sfx/
+temp_archive.7z
+7zSD.sfx
+
+# 临时文件
+*.tmp
+*.temp
 
 # IDE
 .vscode/
@@ -21,6 +34,13 @@ dist/
 .DS_Store
 Thumbs.db
 
-# 编译产物
-*.exe.bak
+# 备份文件
+*.bak
+*.backup
+*.old
+
+# 日志
 *.log
+
+# dist 目录保留 .gitkeep
+!dist/.gitkeep
