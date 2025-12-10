@@ -16,13 +16,8 @@ jobs:
       - name: Checkout代码
         uses: actions/checkout@v4
 
-      - name: 切换到工具目录
-        run: cd tools/vxkex-configurator
-        shell: pwsh
-
       - name: 检查必需文件
         run: |
-          cd tools/vxkex-configurator
           $files = @(
             "ClashVerge-VxKex-Configurator.bat",
             "VxKexConfigurator.ps1",
@@ -47,7 +42,6 @@ jobs:
 
       - name: 创建输出目录
         run: |
-          cd tools/vxkex-configurator
           if (-not (Test-Path "dist")) {
             New-Item -ItemType Directory -Path "dist" | Out-Null
           }
@@ -55,7 +49,6 @@ jobs:
 
       - name: 使用 NSIS 构建安装包
         run: |
-          cd tools/vxkex-configurator
           Write-Host "开始 NSIS 构建..." -ForegroundColor Yellow
           makensis installer.nsi
           if ($LASTEXITCODE -ne 0) {
@@ -67,7 +60,6 @@ jobs:
 
       - name: 验证输出文件
         run: |
-          cd tools/vxkex-configurator
           $exePath = "dist/ClashVerge-VxKex-Configurator.exe"
           if (Test-Path $exePath) {
             $fileInfo = Get-Item $exePath
@@ -86,13 +78,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ClashVerge-VxKex-Configurator
-          path: tools/vxkex-configurator/dist/ClashVerge-VxKex-Configurator.exe
+          path: dist/ClashVerge-VxKex-Configurator.exe
           if-no-files-found: error
 
       - name: 创建 GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: tools/vxkex-configurator/dist/ClashVerge-VxKex-Configurator.exe
+          files: dist/ClashVerge-VxKex-Configurator.exe
           body: |
             # Clash Verge VxKex 配置工具 ${{ github.ref_name }}
 
@@ -109,7 +101,7 @@ jobs:
             - ✅ 自动安装 VxKex 兼容层
             - ✅ 自动检测 Clash Verge 路径
             - ✅ 一键配置注册表
-            - ✅ Windows 原生打包（NSIS）
+            - ✅ 使用 NSIS 行业标准打包
 
             ## 更新日志
             - 使用行业标准 NSIS 打包工具
