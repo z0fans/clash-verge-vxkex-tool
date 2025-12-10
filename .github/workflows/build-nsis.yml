@@ -1,0 +1,121 @@
+name: Build with NSIS
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout代码
+        uses: actions/checkout@v4
+
+      - name: 切换到工具目录
+        run: cd tools/vxkex-configurator
+        shell: pwsh
+
+      - name: 检查必需文件
+        run: |
+          cd tools/vxkex-configurator
+          $files = @(
+            "ClashVerge-VxKex-Configurator.bat",
+            "VxKexConfigurator.ps1",
+            "resources/KexSetup_Release_1_1_2_1428.exe",
+            "installer.nsi"
+          )
+          foreach ($file in $files) {
+            if (Test-Path $file) {
+              Write-Host "✓ $file" -ForegroundColor Green
+            } else {
+              Write-Host "✗ 文件不存在: $file" -ForegroundColor Red
+              exit 1
+            }
+          }
+        shell: pwsh
+
+      - name: 安装 NSIS
+        run: |
+          choco install nsis -y
+          echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: pwsh
+
+      - name: 创建输出目录
+        run: |
+          cd tools/vxkex-configurator
+          if (-not (Test-Path "dist")) {
+            New-Item -ItemType Directory -Path "dist" | Out-Null
+          }
+        shell: pwsh
+
+      - name: 使用 NSIS 构建安装包
+        run: |
+          cd tools/vxkex-configurator
+          Write-Host "开始 NSIS 构建..." -ForegroundColor Yellow
+          makensis installer.nsi
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ NSIS 构建失败" -ForegroundColor Red
+            exit 1
+          }
+          Write-Host "✓ NSIS 构建成功" -ForegroundColor Green
+        shell: pwsh
+
+      - name: 验证输出文件
+        run: |
+          cd tools/vxkex-configurator
+          $exePath = "dist/ClashVerge-VxKex-Configurator.exe"
+          if (Test-Path $exePath) {
+            $fileInfo = Get-Item $exePath
+            $sizeMB = [math]::Round($fileInfo.Length / 1MB, 2)
+            Write-Host "✓ 构建成功！" -ForegroundColor Green
+            Write-Host "  文件: ClashVerge-VxKex-Configurator.exe" -ForegroundColor Cyan
+            Write-Host "  大小: $sizeMB MB" -ForegroundColor Cyan
+            Write-Host "  路径: $($fileInfo.FullName)" -ForegroundColor Cyan
+          } else {
+            Write-Host "❌ 输出文件不存在: $exePath" -ForegroundColor Red
+            exit 1
+          }
+        shell: pwsh
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClashVerge-VxKex-Configurator
+          path: tools/vxkex-configurator/dist/ClashVerge-VxKex-Configurator.exe
+          if-no-files-found: error
+
+      - name: 创建 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tools/vxkex-configurator/dist/ClashVerge-VxKex-Configurator.exe
+          body: |
+            # Clash Verge VxKex 配置工具 ${{ github.ref_name }}
+
+            ## 使用方法
+            1. 下载 `ClashVerge-VxKex-Configurator.exe`
+            2. 右键点击 → "以管理员身份运行"
+            3. 在 GUI 中点击"一键启用 VxKex"
+
+            ## 系统要求
+            - Windows 7 SP1 及以上版本
+            - 管理员权限
+
+            ## 功能特性
+            - ✅ 自动安装 VxKex 兼容层
+            - ✅ 自动检测 Clash Verge 路径
+            - ✅ 一键配置注册表
+            - ✅ Windows 原生打包（NSIS）
+
+            ## 更新日志
+            - 使用行业标准 NSIS 打包工具
+            - GitHub Actions 自动构建
+            - 完整的 CI/CD 集成
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

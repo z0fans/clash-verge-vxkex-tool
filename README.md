@@ -13,7 +13,7 @@ Clash Verge Rev v1.6.2+ 在 Windows 7 上启动时会报错 `0xc0000005`，原�
 ## ✨ 功能特性
 
 - 🎁 **单文件分发** - 仅需一个 EXE 文件，所有资源内嵌
-- 📦 **Windows 原生** - 使用 Windows 自带的 IExpress 打包
+- 📦 **行业标准** - 使用 NSIS 打包工具（业界标准）
 - 🚀 **下载即用** - 双击 EXE 文件即可运行
 - ✅ **零依赖** - 无需 Python、.NET Framework 4.0+、第三方工具
 - ✅ **一键完成** - 无需任何手动操作
@@ -42,9 +42,13 @@ Clash Verge Rev v1.6.2+ 在 Windows 7 上启动时会报错 `0xc0000005`，原�
 ### 从源码构建
 
 ```powershell
-# Windows 系统
-.\build-win7-native.ps1
+# 方式 1: 使用 NSIS（推荐）
+# 1. 安装 NSIS: choco install nsis -y
+# 2. 构建: makensis installer.nsi
 # 输出: dist\ClashVerge-VxKex-Configurator.exe
+
+# 方式 2: GitHub Actions 自动构建
+# 推送带 v* 标签即可自动触发构建和发布
 ```
 
 ### 直接运行（调试）
@@ -83,10 +87,12 @@ powershell -ExecutionPolicy Bypass -File .\VxKexConfigurator.ps1
 vxkex-configurator/
 ├── ClashVerge-VxKex-Configurator.bat    # BAT 启动器
 ├── VxKexConfigurator.ps1                # PowerShell GUI 主程序
-├── build-win7-native.ps1                # IExpress 自动打包脚本
+├── installer.nsi                        # NSIS 安装脚本
 ├── BUILD_INSTRUCTIONS.md                # 详细构建文档
 ├── QUICK_START.md                       # 快速使用指南
 ├── README.md                            # 本文档
+├── .github/workflows/
+│   └── build-nsis.yml                   # GitHub Actions 工作流
 ├── resources/
 │   └── KexSetup_Release_*.exe          # VxKex 安装包（3.9 MB）
 └── dist/
@@ -113,13 +119,16 @@ vxkex-configurator/
 - ✅ **Windows 7 SP1**（主要目标，专门优化）
 - ✅ Windows 8/8.1/10/11（也支持，但这些版本通常不需要 VxKex）
 
-### Q: 为什么使用 IExpress？
+### Q: 为什么使用 NSIS？
 
-**A:** Windows 原生工具，零依赖，完美兼容 Windows 7
+**A:** NSIS 是业界标准的 Windows 安装包工具，具有：
+- ✅ 成熟稳定，广泛应用于各类软件
+- ✅ 完善的 GitHub Actions 支持
+- ✅ 完美兼容 Windows 7 SP1+
 
 ### Q: 杀毒软件报毒？
 
-**A:** 误报。使用 Microsoft 官方工具打包，代码开源可审查
+**A:** 误报。使用 NSIS 开源工具打包，代码开源可审查
 
 ---
 
