@@ -130,75 +130,60 @@ try {
     Write-Host "  目标 EXE 路径: $targetExe" -ForegroundColor Gray
     Write-Host ""
 
-    # 使用 /N 参数进行静默打包，捕获输出
+    # 使用 Start-Process 执行 IExpress（简化版，兼容性更好）
     Write-Host "  正在执行 IExpress..." -ForegroundColor Gray
-    $processInfo = New-Object System.Diagnostics.ProcessStartInfo
-    $processInfo.FileName = $iexpressPath
-    $processInfo.Arguments = "/N `"$tempSedFile`""
-    $processInfo.UseShellExecute = $false
-    $processInfo.RedirectStandardOutput = $true
-    $processInfo.RedirectStandardError = $true
-    $processInfo.CreateNoWindow = $true
 
-    $process = New-Object System.Diagnostics.Process
-    $process.StartInfo = $processInfo
-
-    $stdout = New-Object System.Text.StringBuilder
-    $stderr = New-Object System.Text.StringBuilder
-
-    $process.OutputDataReceived += {
-        if ($EventArgs.Data) {
-            [void]$stdout.AppendLine($EventArgs.Data)
-            Write-Host "  [OUT] $($EventArgs.Data)" -ForegroundColor Gray
-        }
-    }
-    $process.ErrorDataReceived += {
-        if ($EventArgs.Data) {
-            [void]$stderr.AppendLine($EventArgs.Data)
-            Write-Host "  [ERR] $($EventArgs.Data)" -ForegroundColor Red
-        }
-    }
-
-    [void]$process.Start()
-    $process.BeginOutputReadLine()
-    $process.BeginErrorReadLine()
-    $process.WaitForExit()
+    $process = Start-Process -FilePath $iexpressPath `
+                            -ArgumentList "/N", "`"$tempSedFile`"" `
+                            -Wait `
+                            -PassThru `
+                            -NoNewWindow
 
     $exitCode = $process.ExitCode
     Write-Host ""
     Write-Host "  IExpress 退出代码: $exitCode" -ForegroundColor $(if ($exitCode -eq 0) { "Green" } else { "Red" })
 
-    if ($exitCode -eq 0) {
-        # 等待文件系统同步
-        Start-Sleep -Seconds 2
-
-        if (Test-Path $targetExe) {
-            Write-Host "  ✓ IExpress 打包成功！" -ForegroundColor Green
-        } else {
-            Write-Host "  ❌ IExpress 执行成功但未找到输出文件" -ForegroundColor Red
-            Write-Host "  预期路径: $targetExe" -ForegroundColor Yellow
-            Write-Host ""
-            Write-Host "  检查 dist 目录内容:" -ForegroundColor Yellow
-            if (Test-Path "dist") {
-                Get-ChildItem "dist" -Force | ForEach-Object {
-                    Write-Host "    - $($_.Name)" -ForegroundColor Gray
-                }
-            } else {
-                Write-Host "    dist 目录不存在" -ForegroundColor Red
-            }
-            exit 1
-        }
-    } else {
+    if ($exitCode -ne 0) {
         Write-Host "  ❌ IExpress 打包失败" -ForegroundColor Red
-        if ($stderr.Length -gt 0) {
-            Write-Host ""
-            Write-Host "  错误输出:" -ForegroundColor Red
-            Write-Host $stderr.ToString() -ForegroundColor Red
+        Write-Host ""
+        Write-Host "  调试信息:" -ForegroundColor Yellow
+        Write-Host "    当前目录: $(Get-Location)" -ForegroundColor Gray
+        Write-Host "    SED 文件存在: $(Test-Path $tempSedFile)" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "  SED 文件内容（前 20 行）:" -ForegroundColor Yellow
+        Get-Content $tempSedFile -TotalCount 20 | ForEach-Object {
+            Write-Host "    $_" -ForegroundColor Gray
+        }
+        exit 1
+    }
+
+    # 等待文件系统同步
+    Start-Sleep -Seconds 2
+
+    if (Test-Path $targetExe) {
+        Write-Host "  ✓ IExpress 打包成功！" -ForegroundColor Green
+    } else {
+        Write-Host "  ❌ IExpress 执行成功但未找到输出文件" -ForegroundColor Red
+        Write-Host "  预期路径: $targetExe" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "  检查 dist 目录内容:" -ForegroundColor Yellow
+        if (Test-Path "dist") {
+            Get-ChildItem "dist" -Force | ForEach-Object {
+                Write-Host "    - $($_.Name) ($($_.Length) bytes)" -ForegroundColor Gray
+            }
+        } else {
+            Write-Host "    dist 目录不存在" -ForegroundColor Red
+        }
+        Write-Host ""
+        Write-Host "  检查当前目录内容:" -ForegroundColor Yellow
+        Get-ChildItem . -Force | Where-Object { $_.Name -like "*.exe" } | ForEach-Object {
+            Write-Host "    - $($_.FullName)" -ForegroundColor Gray
         }
         exit 1
     }
 } catch {
     Write-Host "  ❌ 执行 IExpress 时出错: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "  异常类型: $($_.Exception.GetType().FullName)" -ForegroundColor Red
     Write-Host "  堆栈跟踪: $($_.ScriptStackTrace)" -ForegroundColor Red
     exit 1
 }
