@@ -8,7 +8,7 @@
 ;--------------------------------
 ; 常规设置
 !define PRODUCT_NAME "Clash Verge VxKex Configurator"
-!define PRODUCT_VERSION "4.0.0"
+!define PRODUCT_VERSION "4.0.1"
 !define PRODUCT_PUBLISHER "Clash Verge Rev Community"
 !define PRODUCT_WEB_SITE "https://github.com/z0fans/clash-verge-vxkex-tool"
 
@@ -50,12 +50,20 @@ Section "MainSection" SEC01
 
     ; 执行配置脚本
     DetailPrint "正在启动 VxKex 配置工具..."
+    DetailPrint "解压路径: $INSTDIR"
     DetailPrint "请在新打开的窗口中完成配置..."
+
+    ; 检查文件是否存在
+    IfFileExists "$INSTDIR\KexSetup_Release_1_1_2_1428.exe" +3 0
+    DetailPrint "错误: 找不到 VxKex 安装包!"
+    Goto cleanup
+
     ExecWait '"$INSTDIR\ClashVerge-VxKex-Configurator.bat"' $0
 
     ; 检查执行结果
     IntCmp $0 0 success
     DetailPrint "配置工具返回代码: $0"
+    DetailPrint "如果遇到问题,请以管理员身份运行此程序!"
     Goto cleanup
 
     success:

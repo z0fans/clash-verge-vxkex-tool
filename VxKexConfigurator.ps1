@@ -5,7 +5,7 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 # 全局变量
-$script:VxKexInstallerPath = "$PSScriptRoot\resources\KexSetup_Release_1_1_2_1428.exe"
+$script:VxKexInstallerPath = "$PSScriptRoot\KexSetup_Release_1_1_2_1428.exe"
 $script:ClashVergeExePath = ""
 
 # 创建主窗体
