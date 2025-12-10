@@ -1,12 +1,12 @@
 # Clash Verge VxKex 一键配置工具
 
-> 🚀 让 Clash Verge Rev 在 Windows 7 上一键启动！Windows 原生打包，单个 EXE 文件！
+> 🚀 让 Clash Verge Rev 在 Windows 7 上完美运行！单个 EXE 文件，一键配置！
 
 ## 📋 问题背景
 
-Clash Verge Rev v1.6.2+ 版本在 Windows 7 上启动时会报错 `0xc0000005`（应用程序错误），原因是程序调用了 Windows 8+ 才有的 API 函数。
+Clash Verge Rev v1.6.2+ 在 Windows 7 上启动时会报错 `0xc0000005`，原因是调用了 Windows 8+ 的 API。
 
-**现在只需要一个 EXE 文件，双击即可！**
+**本工具自动安装 VxKex 兼容层并配置注册表，让 Clash Verge 在 Windows 7 上完美运行！**
 
 ---
 
@@ -27,52 +27,37 @@ Clash Verge Rev v1.6.2+ 版本在 Windows 7 上启动时会报错 `0xc0000005`�
 
 ## 🎯 使用方法
 
-### 下载预编译版本（推荐）
+### 📥 下载并运行（3 步搞定）
 
-**超级简单！只需 3 步：**
+1. **下载** 从 [Releases](../../releases) 下载 `ClashVerge-VxKex-Configurator.exe`（约 4 MB）
+2. **运行** 右键 EXE → 选择"以管理员身份运行"
+3. **配置** 在 GUI 中点击"🚀 一键启用 VxKex"，等待 1-2 分钟
 
-1. 从 [Releases](../../releases) 下载文件：
-   - `ClashVerge-VxKex-Configurator.exe`（约 4-5 MB）
-2. **右键点击 EXE → 选择"以管理员身份运行"**
-3. ✅ 完成！按照 GUI 提示操作即可
+完成！现在可以正常启动 Clash Verge 了。
 
-**工作流程：**
-- 自动解压文件到临时目录
-- 启动 GUI 配置界面
-- 自动检测或手动选择 Clash Verge 路径
-- 点击"🚀 一键启用 VxKex"
-- 等待配置完成（约 1-2 分钟）
-- 配置完成后自动清理临时文件
+---
+
+## 🔨 开发者
 
 ### 从源码构建
 
-如果需要自己构建 EXE 文件：
-
 ```powershell
-# 1. 打开 PowerShell
-cd tools\vxkex-configurator
-
-# 2. 执行构建脚本（Windows 原生 IExpress 打包）
+# Windows 系统
 .\build-win7-native.ps1
-
-# 3. 输出文件位于: dist\ClashVerge-VxKex-Configurator.exe
+# 输出: dist\ClashVerge-VxKex-Configurator.exe
 ```
 
-详细构建说明请参阅 [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)
-
-### 从源码直接运行（开发调试）
-
-方式 1: 使用 BAT 启动器
+### 直接运行（调试）
 
 ```batch
+# 方式 1: BAT 启动器
 ClashVerge-VxKex-Configurator.bat
-```
 
-方式 2: 直接运行 PowerShell 脚本
-
-```powershell
+# 方式 2: PowerShell 直接运行
 powershell -ExecutionPolicy Bypass -File .\VxKexConfigurator.ps1
 ```
+
+详见 [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)
 
 ---
 
@@ -90,65 +75,23 @@ powershell -ExecutionPolicy Bypass -File .\VxKexConfigurator.ps1
 
 ---
 
-## 🏗️ 构建指南
-
-### 环境要求
-
-**构建环境：**
-- Windows 7 SP1 / Windows 8+ / Windows 10 / Windows 11
-- PowerShell 2.0+ (Windows 7+ 内置)
-- IExpress (Windows 自带工具，无需安装)
-
-**目标运行环境：**
-- Windows 7 SP1（主要目标）
-- 管理员权限
-
-### 打包步骤
-
-使用 Windows 原生 IExpress 打包：
-
-```powershell
-# 标准构建
-.\build-win7-native.ps1
-
-# 清理重新构建
-.\build-win7-native.ps1 -Clean
-```
-
-这将生成：
-- `dist/ClashVerge-VxKex-Configurator.exe` - 单个自解压 EXE（约 4-5 MB）
-
-### 打包技术说明
-
-- **打包工具**: Windows 自带的 IExpress
-- **打包格式**: CAB 压缩自解压包
-- **总大小**: 约 4-5 MB（包含 VxKex 安装包）
-- **特点**: 无需第三方工具，Windows 原生支持
-- **分发**: 只需分发一个 EXE 文件
-
-详细构建说明请参阅 [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)
-
 ---
 
-## 📂 目录结构
+## 📂 项目结构
 
 ```
 vxkex-configurator/
-├── ClashVerge-VxKex-Configurator.bat          # BAT 启动器（检查权限并调用 PS1）
-├── VxKexConfigurator.ps1                      # 主程序（PowerShell + Windows Forms GUI）
-├── build-win7-native.ps1                      # Windows 原生 IExpress 打包脚本 ⭐
-├── build-iexpress.sed                         # IExpress 配置模板
-├── build-embedded.ps1                         # 旧：内嵌式打包脚本（已弃用）
-├── build-sfx.ps1                              # 旧：7-Zip SFX 打包脚本（已弃用）
-├── BUILD_INSTRUCTIONS.md                      # 详细构建说明文档 ⭐
-├── README.md                                  # 本文档
+├── ClashVerge-VxKex-Configurator.bat    # BAT 启动器
+├── VxKexConfigurator.ps1                # PowerShell GUI 主程序
+├── build-win7-native.ps1                # IExpress 自动打包脚本
+├── BUILD_INSTRUCTIONS.md                # 详细构建文档
+├── QUICK_START.md                       # 快速使用指南
+├── README.md                            # 本文档
 ├── resources/
-│   └── KexSetup_Release_1_1_2_1428.exe       # VxKex 安装包（3.9 MB）
-└── dist/                                      # 构建输出目录
-    └── ClashVerge-VxKex-Configurator.exe     # 打包后的单个 EXE 文件 ⭐
+│   └── KexSetup_Release_*.exe          # VxKex 安装包（3.9 MB）
+└── dist/
+    └── *.exe                            # 构建输出（Git 忽略）
 ```
-
-⭐ = 推荐使用的新方案
 
 ---
 
@@ -170,30 +113,13 @@ vxkex-configurator/
 - ✅ **Windows 7 SP1**（主要目标，专门优化）
 - ✅ Windows 8/8.1/10/11（也支持，但这些版本通常不需要 VxKex）
 
-### Q: 为什么使用 IExpress 而不是其他打包工具？
+### Q: 为什么使用 IExpress？
 
-**A:** IExpress 是最适合 Windows 7 的打包方案：
+**A:** Windows 原生工具，零依赖，完美兼容 Windows 7
 
-**IExpress 优势：**
-- ✅ **Windows 原生** - 所有 Windows 版本自带，包括 Windows 7
-- ✅ **零依赖** - 无需安装任何第三方工具
-- ✅ **稳定可靠** - Microsoft 官方工具，经过充分测试
-- ✅ **完美兼容** - 生成的 EXE 在 Windows 7 上完美运行
-- ✅ **CI/CD 友好** - 可以在 GitHub Actions 上自动化构建
+### Q: 杀毒软件报毒？
 
-**其他方案的问题：**
-- ❌ **ps2exe**: 需要 .NET Framework 4.0+（Windows 7 默认只有 3.5）
-- ❌ **7-Zip SFX**: 需要安装 7-Zip，增加构建复杂度
-- ❌ **Base64 内嵌**: 文件体积增大 33%，解压速度慢
-
-### Q: 为什么选择 PowerShell 而不是 Python？
-
-**A:**
-- ✅ Windows 7 原生支持 PowerShell 2.0
-- ✅ 无需安装 Python 运行时（Python 在 Windows 7 上可能有兼容性问题）
-- ✅ Windows Forms 支持完美（基于 .NET 2.0）
-- ✅ 体积更小，启动更快
-- ✅ 更适合 Windows 系统管理任务
+**A:** 误报。使用 Microsoft 官方工具打包，代码开源可审查
 
 ---
 
