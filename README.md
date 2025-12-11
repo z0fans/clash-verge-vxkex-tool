@@ -85,11 +85,16 @@ powershell -ExecutionPolicy Bypass -File .\VxKexConfigurator.ps1
 
 ```
 vxkex-configurator/
-├── ClashVerge-VxKex-Configurator.bat    # BAT 启动器
+├── ClashVerge-VxKex-Configurator.bat    # 主配置工具 BAT 启动器
 ├── VxKexConfigurator.ps1                # PowerShell GUI 主程序
+├── VxKex-Diagnostic.bat                 # 🆕 VxKex 安装诊断工具
+├── VxKex-Diagnostic.ps1                 # 🆕 诊断工具 PowerShell 脚本
+├── VxKex-Manual-Install.bat             # 🆕 VxKex 手动安装工具
+├── VxKex-Manual-Install.ps1             # 🆕 手动安装 PowerShell 脚本
 ├── installer.nsi                        # NSIS 安装脚本
 ├── BUILD_INSTRUCTIONS.md                # 详细构建文档
 ├── QUICK_START.md                       # 快速使用指南
+├── TROUBLESHOOTING.md                   # 🆕 故障排除指南
 ├── README.md                            # 本文档
 ├── .github/workflows/
 │   └── build-nsis.yml                   # GitHub Actions 工作流
@@ -99,9 +104,47 @@ vxkex-configurator/
     └── *.exe                            # 构建输出（Git 忽略）
 ```
 
+### 🆕 新增工具说明
+
+| 工具 | 用途 | 使用场景 |
+|------|------|----------|
+| **VxKex-Diagnostic.bat** | 诊断 VxKex 安装状态 | 验证 VxKex 是否正确安装 |
+| **VxKex-Manual-Install.bat** | 手动安装 VxKex | 静默安装失败时使用 |
+| **TROUBLESHOOTING.md** | 故障排除指南 | 遇到问题时查阅 |
+
 ---
 
 ## ❓ 常见问题
+
+### Q: 软件安装成功，但不确定 VxKex 是否正确安装？
+
+**A:** VxKex 使用**静默安装**模式，没有可见的安装界面。请使用以下方法验证：
+
+**方法 1: 运行诊断工具（推荐）**
+```batch
+双击运行: VxKex-Diagnostic.bat
+```
+诊断工具会检查：
+- ✅ VxKex 安装目录是否存在
+- ✅ VxKex 注册表项是否正确
+- ✅ Clash Verge 配置是否完成
+- ✅ VxKexLoader.dll 是否存在
+
+**方法 2: 手动检查**
+1. 查看 `C:\Program Files\VxKex` 目录是否存在
+2. 查看 `C:\Windows\System32\VxKexLoader.dll` 文件是否存在
+
+如果诊断失败，请查看 [TROUBLESHOOTING.md](TROUBLESHOOTING.md) 获取详细的故障排除指南。
+
+### Q: 静默安装失败，怎么手动安装 VxKex？
+
+**A:** 使用手动安装工具：
+```batch
+双击运行: VxKex-Manual-Install.bat
+```
+选择 **图形界面安装**（选项 1），您将看到完整的安装过程。
+
+安装完成后，再运行 `ClashVerge-VxKex-Configurator.bat` 配置 Clash Verge。
 
 ### Q: 安装时出现红色错误窗口怎么办？
 
