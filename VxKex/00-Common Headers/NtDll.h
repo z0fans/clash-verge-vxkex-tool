@@ -2881,8 +2881,9 @@ typedef struct _RTL_BITMAP {
 
 GEN_STD_TYPEDEFS(SID_IDENTIFIER_AUTHORITY);
 
-// 防止与 Windows SDK 的 WELL_KNOWN_SID_TYPE 重复定义
-#ifndef WinLocalAccountSid
+// 这些定义已存在于较新版本的 Windows SDK (10.0.22621.0+) 中
+// 完全跳过自定义定义，使用 SDK 提供的版本
+#if 0
 typedef enum _WELL_KNOWN_SID_TYPE {
     WinApplicationPackageAuthoritySid				= 83,
     WinBuiltinAnyPackageSid							= 84,
@@ -2922,7 +2923,7 @@ typedef enum _WELL_KNOWN_SID_TYPE {
     WinAuthenticationFreshKeyAuthSid				= 118,
     WinBuiltinDeviceOwnersSid						= 119,
 } TYPEDEF_TYPE_NAME(WELL_KNOWN_SID_TYPE);
-#endif // WinLocalAccountSid
+#endif
 
 #pragma endregion
 
