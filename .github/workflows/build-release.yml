@@ -112,8 +112,8 @@ jobs:
 
         Write-Host "Building installer for version: $Version"
 
-        # 创建完整的 ISS 脚本
-        $IssContent = @"
+        # 创建 ISS 脚本文件
+        @"
 #define MyAppName "VxKex"
 #define MyAppVersion "$Version"
 #define MyAppPublisher "VXsoft"
@@ -344,9 +344,7 @@ begin
     AutoConfigureClashVerge;
   end;
 end;
-"@
-
-        $IssContent | Out-File -FilePath "VxKex-Installer.iss" -Encoding UTF8
+"@ | Out-File -FilePath "VxKex-Installer.iss" -Encoding UTF8
         Write-Host "Inno Setup script created successfully"
 
     # ========== 步骤 9: 编译安装程序 ==========
