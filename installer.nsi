@@ -12,7 +12,7 @@ Unicode True
 ;--------------------------------
 ; 常规设置
 !define PRODUCT_NAME "Clash Verge VxKex Configurator"
-!define PRODUCT_VERSION "4.0.2"
+!define PRODUCT_VERSION "5.0.0"
 !define PRODUCT_PUBLISHER "Clash Verge Rev Community"
 !define PRODUCT_WEB_SITE "https://github.com/z0fans/clash-verge-vxkex-tool"
 
