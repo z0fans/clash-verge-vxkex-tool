@@ -113,6 +113,8 @@ jobs:
         Write-Host "Building installer for version: $Version"
 
         # 创建完整的 ISS 脚本
+        # 使用变量避免 YAML 中的双花括号问题
+        $AppId = "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
         $IssContent = @"
 #define MyAppName "VxKex"
 #define MyAppVersion "$Version"
@@ -121,7 +123,7 @@ jobs:
 #define MyAppExeName "KexCfg.exe"
 
 [Setup]
-AppId={{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}
+AppId=$AppId
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
