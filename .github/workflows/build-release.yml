@@ -43,6 +43,7 @@ jobs:
         msbuild ${{ env.SOLUTION_NAME }} `
           /p:Configuration=${{ env.BUILD_CONFIGURATION }} `
           /p:Platform=Win32 `
+          /p:PlatformToolset=v142 `
           /m `
           /v:minimal
 
@@ -52,6 +53,7 @@ jobs:
         msbuild ${{ env.SOLUTION_NAME }} `
           /p:Configuration=${{ env.BUILD_CONFIGURATION }} `
           /p:Platform=x64 `
+          /p:PlatformToolset=v142 `
           /m `
           /v:minimal
 
