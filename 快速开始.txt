@@ -1,0 +1,80 @@
+╔═══════════════════════════════════════════════════════════════╗
+║        VxKex GitHub Actions 自动化打包系统 - 快速开始        ║
+╚═══════════════════════════════════════════════════════════════╝
+
+📦 已创建的文件:
+
+✅ .github/workflows/build-release.yml     - GitHub Actions 工作流配置
+✅ .github/workflows/README.md             - 完整使用文档
+✅ .github/workflows/quick-start.md        - 5分钟快速上手指南  
+✅ .github/workflows/ARCHITECTURE.md       - 系统架构详解
+✅ .github/RELEASE_TEMPLATE.md             - Release Notes 模板
+✅ BUILD_GUIDE.md                          - 构建与发布完整指南
+✅ SETUP_SUMMARY.md                        - 配置总结文档
+✅ CLAUDE.md                               - 代码库架构文档
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 第一次使用 (只需 3 步):
+
+步骤 1: 提交配置文件到 GitHub
+    cd /path/to/VxKex
+    git add .github/ *.md
+    git commit -m "Add automated build and release workflow"
+    git push origin main
+
+步骤 2: 创建版本标签
+    git tag v1.1.3.1428
+    git push origin v1.1.3.1428
+
+步骤 3: 等待构建完成 (约 10-15 分钟)
+    访问: https://github.com/YOUR_USERNAME/VxKex/actions
+    查看构建进度
+
+🎉 完成! 在 Releases 页面即可下载安装程序!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⭐ 核心功能:
+
+✅ 自动编译 x86 + x64 版本
+✅ 自动创建安装程序 (支持静默安装)
+✅ 自动创建便携版 ZIP
+✅ 自动配置 Clash Verge (无需手动操作!)
+   • Clash Verge.exe
+   • resources\clash-verge-service.exe
+   • resources\install-service.exe  
+   • resources\uninstall-service.exe
+✅ 自动生成 SHA256 校验和
+✅ 自动发布到 GitHub Releases
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 详细文档:
+
+• 快速入门: .github/workflows/quick-start.md
+• 完整文档: .github/workflows/README.md
+• 架构详解: .github/workflows/ARCHITECTURE.md
+• 构建指南: BUILD_GUIDE.md
+• 配置总结: SETUP_SUMMARY.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 可选: 配置代码签名
+
+1. 购买代码签名证书 (DigiCert, Sectigo 等)
+2. 导出为 PFX 格式并转换为 Base64
+3. 在 GitHub Settings → Secrets 中添加:
+   - CERTIFICATE_BASE64
+   - CERTIFICATE_PASSWORD
+4. 参考 .github/workflows/README.md 修改工作流
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ 需要帮助?
+
+• 查看文档目录
+• 提交 Issue
+• 参考示例日志
+
+祝你构建顺利! 🎉
