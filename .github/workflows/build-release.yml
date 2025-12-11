@@ -60,23 +60,23 @@ jobs:
       shell: pwsh
       run: |
         # 创建打包目录
-        New-Item -ItemType Directory -Force -Path ".\VxKex/PackageRoot"
-        New-Item -ItemType Directory -Force -Path ".\VxKex/PackageRoot\x86"
-        New-Item -ItemType Directory -Force -Path ".\VxKex/PackageRoot\x64"
+        New-Item -ItemType Directory -Force -Path ".\VxKex\PackageRoot"
+        New-Item -ItemType Directory -Force -Path ".\VxKex\PackageRoot\x86"
+        New-Item -ItemType Directory -Force -Path ".\VxKex\PackageRoot\x64"
 
         # 复制 x86 产物
         Write-Host "Copying x86 binaries..."
-        Get-ChildItem -Path ".VxKex\Release" -Recurse -Include "*.dll","*.exe" |
-          Copy-Item -Destination ".\VxKex/PackageRoot\x86" -Force
+        Get-ChildItem -Path ".\VxKex\Release" -Recurse -Include "*.dll","*.exe" |
+          Copy-Item -Destination ".\VxKex\PackageRoot\x86" -Force
 
         # 复制 x64 产物
         Write-Host "Copying x64 binaries..."
-        Get-ChildItem -Path ".\x64VxKex\Release" -Recurse -Include "*.dll","*.exe" |
-          Copy-Item -Destination ".\VxKex/PackageRoot\x64" -Force
+        Get-ChildItem -Path ".\VxKex\x64\Release" -Recurse -Include "*.dll","*.exe" |
+          Copy-Item -Destination ".\VxKex\PackageRoot\x64" -Force
 
         # 复制文档和其他资源
-        Copy-Item -Path ".\00-Documentation\*" -Destination ".\VxKex/PackageRoot" -Recurse -Force
-        Copy-Item -Path ".\README.md" -Destination ".\VxKex/PackageRoot" -Force
+        Copy-Item -Path ".\VxKex\00-Documentation\*" -Destination ".\VxKex\PackageRoot" -Recurse -Force
+        Copy-Item -Path ".\VxKex\README.md" -Destination ".\VxKex\PackageRoot" -Force
 
         Write-Host "Build artifacts collected successfully"
 
@@ -156,12 +156,12 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 ; x64 文件
-Source: "VxKex/PackageRoot\x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Check: Is64BitInstallMode
+Source: "VxKex\PackageRoot\x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Check: Is64BitInstallMode
 ; x86 文件
-Source: "VxKex/PackageRoot\x86\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Check: not Is64BitInstallMode
+Source: "VxKex\PackageRoot\x86\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Check: not Is64BitInstallMode
 ; 文档
-Source: "VxKex/PackageRoot\*.md"; DestDir: "{app}"; Flags: ignoreversion
-Source: "VxKex/PackageRoot\*.txt"; DestDir: "{app}\Documentation"; Flags: ignoreversion recursesubdirs
+Source: "VxKex\PackageRoot\*.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "VxKex\PackageRoot\*.txt"; DestDir: "{app}\Documentation"; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: "{group}\VxKex Configuration"; Filename: "{app}\{#MyAppExeName}"
@@ -389,11 +389,11 @@ end;
 
         # 创建 x86 便携版
         Write-Host "Creating x86 portable package..."
-        Compress-Archive -Path ".\VxKex/PackageRoot\x86\*" -DestinationPath "VxKex-$Version-Portable-x86.zip" -Force
+        Compress-Archive -Path ".\VxKex\PackageRoot\x86\*" -DestinationPath "VxKex-$Version-Portable-x86.zip" -Force
 
         # 创建 x64 便携版
         Write-Host "Creating x64 portable package..."
-        Compress-Archive -Path ".\VxKex/PackageRoot\x64\*" -DestinationPath "VxKex-$Version-Portable-x64.zip" -Force
+        Compress-Archive -Path ".\VxKex\PackageRoot\x64\*" -DestinationPath "VxKex-$Version-Portable-x64.zip" -Force
 
         Write-Host "Portable packages created successfully"
 
