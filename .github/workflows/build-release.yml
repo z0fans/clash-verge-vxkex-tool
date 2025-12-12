@@ -104,8 +104,8 @@ jobs:
         # 获取版本号
         $Version = if ($env:GITHUB_REF -match 'refs/tags/v(.*)') {
           $matches[1]
-        } elseif ($env:GITHUB_EVENT_INPUTS_VERSION) {
-          $env:GITHUB_EVENT_INPUTS_VERSION
+        } elseif ($env:GITHUB_EVENT_NAME -eq 'workflow_dispatch' -and $env:INPUT_VERSION) {
+          $env:INPUT_VERSION
         } else {
           "1.1.3.1428"
         }
@@ -113,7 +113,7 @@ jobs:
         Write-Host "Building installer for version: $Version"
 
         # 从模板创建 ISS 脚本,替换版本号占位符
-        $Template = Get-Content ".\.github\workflows\installer-template.iss" -Raw -Encoding UTF8
+        $Template = Get-Content ".github/workflows/installer-template.iss" -Raw -Encoding UTF8
         $IssContent = $Template -replace 'VERSION_PLACEHOLDER', $Version
         $IssContent | Out-File -FilePath "VxKex-Installer.iss" -Encoding UTF8
 
