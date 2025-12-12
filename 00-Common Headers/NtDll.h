@@ -644,24 +644,45 @@ typedef struct _MEM_ADDRESS_REQUIREMENTS {
 
 #pragma region Data Type Definitions
 
+#ifndef _NTSTATUS_DEFINED
+#define _NTSTATUS_DEFINED
 typedef LONG NTSTATUS;
+#endif
+
+#ifndef _KPRIORITY_DEFINED
+#define _KPRIORITY_DEFINED
 typedef LONG KPRIORITY;
+#endif
+
+#ifndef _CSHORT_DEFINED
+#define _CSHORT_DEFINED
 typedef SHORT CSHORT;
+#endif
 
 typedef ULONG GDI_HANDLE_BUFFER32[GDI_HANDLE_BUFFER_SIZE32];
 typedef ULONG GDI_HANDLE_BUFFER64[GDI_HANDLE_BUFFER_SIZE64];
 typedef ULONG GDI_HANDLE_BUFFER[GDI_HANDLE_BUFFER_SIZE];
 typedef VOID (*PPS_POST_PROCESS_INIT_ROUTINE) (VOID);
 
+#ifndef _PPEB_DEFINED
+#define _PPEB_DEFINED
 typedef struct _PEB *PPEB;
 typedef struct _PEB *__ptr64 PPEB64;
+#endif
+
+#ifndef _PTEB_DEFINED
+#define _PTEB_DEFINED
 typedef struct _TEB *PTEB;
 typedef struct _TEB *__ptr64 PTEB64;
+#endif
 
+#ifndef _CLIENT_ID_DEFINED
+#define _CLIENT_ID_DEFINED
 typedef struct _CLIENT_ID {
 	HANDLE								UniqueProcess;
 	HANDLE								UniqueThread;
 } TYPEDEF_TYPE_NAME(CLIENT_ID);
+#endif
 
 typedef struct _PROCESS_BASIC_INFORMATION {
     NTSTATUS	ExitStatus;
@@ -1206,6 +1227,8 @@ typedef enum _ALTERNATIVE_ARCHITECTURE_TYPE {
 	NEC98x86
 } ALTERNATIVE_ARCHITECTURE_TYPE;
 
+#ifndef _STRING_DEFINED
+#define _STRING_DEFINED
 typedef struct _STRING {
 	USHORT								Length;
 	USHORT								MaximumLength;
@@ -1214,12 +1237,16 @@ typedef struct _STRING {
 
 GEN_STD_TYPEDEFS(STRING);
 GEN_STD_TYPEDEFS(ANSI_STRING);
+#endif
 
+#ifndef _UNICODE_STRING_DEFINED
+#define _UNICODE_STRING_DEFINED
 typedef struct _UNICODE_STRING {
 	USHORT								Length;
 	USHORT								MaximumLength;
 	PWCHAR								Buffer;
 } TYPEDEF_TYPE_NAME(UNICODE_STRING);
+#endif
 
 typedef struct _UNICODE_STRING32 {
 	USHORT								Length;
