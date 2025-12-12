@@ -55,7 +55,7 @@ jobs:
           /p:PlatformToolset=v142 `
           /m `
           /v:detailed `
-          /fl /flp:LogFile=msbuild-x86.log;Verbosity=detailed
+          /fl "/flp:LogFile=msbuild-x86.log;Verbosity=detailed"
 
     - name: Upload x86 Build Log (on failure)
       if: failure() && steps.build-x86.outcome == 'failure'
@@ -88,7 +88,7 @@ jobs:
           /p:PlatformToolset=v142 `
           /m `
           /v:detailed `
-          /fl /flp:LogFile=msbuild-x64.log;Verbosity=detailed
+          /fl "/flp:LogFile=msbuild-x64.log;Verbosity=detailed"
 
     - name: Upload x64 Build Log (on failure)
       if: failure() && steps.build-x64.outcome == 'failure'
