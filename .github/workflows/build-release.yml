@@ -52,6 +52,7 @@ jobs:
         msbuild ${{ env.SOLUTION_NAME }} `
           /p:Configuration=${{ env.BUILD_CONFIGURATION }} `
           /p:Platform=Win32 `
+          /p:PlatformToolset=v142 `
           /m `
           /v:detailed `
           /fl /flp:LogFile=msbuild-x86.log;Verbosity=detailed
@@ -84,6 +85,7 @@ jobs:
         msbuild ${{ env.SOLUTION_NAME }} `
           /p:Configuration=${{ env.BUILD_CONFIGURATION }} `
           /p:Platform=x64 `
+          /p:PlatformToolset=v142 `
           /m `
           /v:detailed `
           /fl /flp:LogFile=msbuild-x64.log;Verbosity=detailed
